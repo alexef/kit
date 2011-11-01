@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+    <h3>Trackers</h3>
+    <ul>
+    {% for t in trackers %}
+        <li>{{ t }}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <h2>Issues</h2>
+    <table>
+    <tr>
+        <th>#</th>
+        <th>Tracker</th>
+        <th>Status</th>
+        <th>Priority</th>
+        <th>Subject</th>
+        <th>Updated</th>
+    </tr>
+
+    {% for issue in object_list %}
+    <tr>
+        <td>{{ issue.pk }}</td>
+        <td>{{ issue.tracker }}</td>
+        <td>{{ issue.get_status_display }}</td>
+        <td>{{ issue.get_priority_display }}</td>
+        <td><a href="{% url issues_view issue.project issue.pk %}">{{ issue }}</a></td>
+        <td>{{ issue.date_updated }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

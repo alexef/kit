@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load markup %}
+
+{% block content %}
+<h2>Select project</h2>
+
+{% for project in projects %}
+    <h3><a href="{% url issues_list project.name %}">{{ project }}</a></h3>
+    <p>{{ project.description|markdown }}</p>
+{% empty %}
+    <p>No projects defined.</p>
+{% endfor %}
+
+{% endblock %}

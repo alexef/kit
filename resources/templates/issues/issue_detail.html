@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load markup %}
+
+{% block content %}
+    <h2>{{ object.tracker }} #{{ object.pk }}: {{ object.title }}</h2>
+    <table><tr><td>
+    <p><strong>Status:</strong> {{ object.get_status_display }}</p>
+    <p><strong>Priority:</strong> {{ object.priority }}</p>
+    <p><strong>Assigned to:</strong> {{ object.assigned }}</p>
+    </td>
+    <td valign="top">
+    <p><strong>Reported by:</strong> {{ object.reporter }}</p>
+    <p><strong>Category:</strong> {{ object.category }}</p>
+    <p><strong>Last updated:</strong> {{ object.date_updated }}</p>
+    </td></tr></table>
+
+    <p><strong>Description</strong></p>
+    <p>{{ object.text|markdown }}</p>
+
+{% endblock %}

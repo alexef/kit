@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>{% block title %}KIT{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css"
+</head>
+<body>
+<div id="header">
+    <div id="login">
+        {{ user }}, <a href="#">logout</a>.
+    </div>
+<h1><a href="{% url projects_list %}">KIT</a> {% if project %}&raquo; <a href="{% url issues_list project %}">{{ project }}</a>{% endif %}</h1>
+</div>
+<div id="sidebar">
+    {% block sidebar %}
+    {% endblock %}
+</div>
+<div id="content">
+{% block content %}
+{% endblock %}
+</div>
+<div id="footer">
+    &copy; 2011 KSS
+</div>
+</body>
+</html>

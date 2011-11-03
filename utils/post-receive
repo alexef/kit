@@ -15,6 +15,8 @@ def get_commits(old_rev, new_rev):
         p = subprocess.Popen(['git', 'show', '-s', '%s' % id],
                         stdout=subprocess.PIPE)
         info = p.stdout.read().split('\n')
+        if len(info) < 3:
+            continue
         commits.append({'id': info[0], 'author': info[1], 'date': info[2], 'message': ''.join(info[3:]).strip()})
     return commits
 

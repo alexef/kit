@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
 {% block sidebar %}
-    <h3>Trackers</h3>
+    <h4>Issues</h4>
     <ul>
-    {% for t in trackers %}
-        <li>{{ t }}</li>
-    {% endfor %}
+        <li><a href="{% url issues_list project %}">View all</a></li>
+        <li><a href="{% url issues_report project %}">Report</a></li>
     </ul>
 {% endblock %}
 
@@ -18,6 +17,7 @@
         <th>Status</th>
         <th>Priority</th>
         <th>Subject</th>
+        <th>Assigned</th>
         <th>Updated</th>
     </tr>
 
@@ -28,6 +28,7 @@
         <td>{{ issue.get_status_display }}</td>
         <td>{{ issue.get_priority_display }}</td>
         <td><a href="{% url issues_view issue.project issue.pk %}">{{ issue }}</a></td>
+        <td align="center">{% if issue.assigned %}{{ issue.assigned }}{% else %}-{% endif %}</td>
         <td>{{ issue.date_updated }}</td>
     </tr>
     {% endfor %}

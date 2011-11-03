@@ -1,6 +1,9 @@
 * {
     font-family: Verdana, sans-serif;
 }
+h1, h2, h3, h4 {
+    margin: 4px 0px;
+}
 body, td, th {
     margin: 0; padding: 0;
     font-size: 10pt;
@@ -26,9 +29,30 @@ th {
     text-align: right;
     float: right;
 }
+#menu {;
+    border:  1px dotted #ddd;
+    border-top: none;
+    float: right;
+    padding-right: 4px;
+    margin-right: 40px;
+}
+#menu ul {
+    list-style-type: none;
+    margin: 8px;
+    padding: 0px;
+}
+#menu ul li {
+    display: inline-block;
+}
+#menu ul li a {
+    text-decoration: none;
+    color: #000;
+}
+#menu ul li a.active {
+    font-weight: bold;
+}
 #content {
-    padding: 4px;
-    float: left;
+    padding: 4px 240px 0px 20px;
 }
 #sidebar {
     width: 200px;
@@ -39,8 +63,21 @@ th {
     border-left: 1px solid #ddd;
     clear: left;
 }
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
 #footer {
     text-align: center;
     font-size: 0.9em;
     clear: both;
+}
+
+div.replies {
+    margin-left: 20px;
+}
+div.issue {
+    background-color: #f5f5dc;
+    border:  1px dashed #ddd;
+    padding: 10px;
 }

@@ -1,19 +1,37 @@
 <html>
 <head>
     <title>{% block title %}KIT{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css"
+    <link rel="stylesheet" type="text/css" href="/static/styles.css" />
 </head>
 <body>
 <div id="header">
     <div id="login">
-        {{ user }}, <a href="#">logout</a>.
+        {% if user.is_authenticated %}
+        {{ user }}, <a href="{% url django.contrib.auth.views.logout %}">logout</a>.
+        {% else %}
+        Anonymous, <a href="{% url django.contrib.auth.views.login %}">login</a>.
+        {% endif %}
     </div>
-<h1><a href="{% url projects_list %}">KIT</a> {% if project %}&raquo; <a href="{% url issues_list project %}">{{ project }}</a>{% endif %}</h1>
+<h1>
+    {% if project %}
+    <a href="{% url issues_list project %}">{{ project }}</a>
+    {% else %}
+    <a href="{% url projects_list %}">KIT</a>
+    {% endif %}
+</h1>
 </div>
 <div id="sidebar">
     {% block sidebar %}
     {% endblock %}
 </div>
+   <div id="menu">
+        <ul>
+            {% if project %}
+            <li><a href="{% url issues_list project %}" class="{% if module == 'issues' %}active{% endif %}">Issues</a></li>
+            {% endif %}
+            <li><a href="{% url projects_list %}" class="{% if module == '' %}active{% endif %}">Projects</a></li>
+        </ul>
+    </div>
 <div id="content">
 {% block content %}
 {% endblock %}

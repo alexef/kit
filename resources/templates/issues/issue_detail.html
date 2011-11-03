@@ -1,20 +1,46 @@
-{% extends 'base.html' %}
+{% extends 'issues/issue_list.html' %}
 {% load markup %}
+{% load comments %}
+{% load issues %}
+
+{% block sidebar %}
+    {{ block.super }}
+{% endblock %}
 
 {% block content %}
-    <h2>{{ object.tracker }} #{{ object.pk }}: {{ object.title }}</h2>
-    <table><tr><td>
+    <h2>{{ object.tracker }} #{{ object.pk }}</h2>
+    <div class="issue">
+    <h3>{{ object.title }}</h3>
+    <table><tr>
+     <td width="30%">
     <p><strong>Status:</strong> {{ object.get_status_display }}</p>
     <p><strong>Priority:</strong> {{ object.priority }}</p>
     <p><strong>Assigned to:</strong> {{ object.assigned }}</p>
     </td>
-    <td valign="top">
+    <td valign="top" width="30%">
     <p><strong>Reported by:</strong> {{ object.reporter }}</p>
     <p><strong>Category:</strong> {{ object.category }}</p>
     <p><strong>Last updated:</strong> {{ object.date_updated }}</p>
-    </td></tr></table>
+    </td>
+    <td valign="top" width="30%">
+        <p><strong>Depends</strong></p>
+        {% for i in object.dependencies.all %}
+            {% issue i %}
+        {% endfor %}
+        <p><strong>Blocks</strong></p>
+        {% for i in object.block.all %}
+            {% issue i %}
+        {% endfor %}
+    </td>
+    </tr></table>
 
     <p><strong>Description</strong></p>
     <p>{{ object.text|markdown }}</p>
+    </div>
 
+    <div class="comments">
+    {% for c in object.comments %}
+        {% comment c %}
+    {% endfor %}
+    </div>
 {% endblock %}

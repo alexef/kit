@@ -13,5 +13,7 @@ urlpatterns = patterns('',
     url(r'^$', HomePage.as_view(), name='projects_list'),
     url(r'^(?P<project>.+)/issues/', include('kit.issues.urls')),
 
+    url(r'^user/login/', 'django.contrib.auth.views.login'),
+    url(r'^user/logout/', 'django.contrib.auth.views.logout', dict(next_page='/')),
     url(r'^admin/', include(admin.site.urls)),
 )

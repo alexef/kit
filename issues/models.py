@@ -2,9 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Project(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
     title = models.CharField(max_length=200)
     description = models.TextField(max_length=2000)
+    public = models.BooleanField(default=False, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -38,6 +39,8 @@ class Issue(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
+    dependencies = models.ManyToManyField('Issue', related_name='block', blank=True)
+
     def get_priority_display(self):
         if self.priority < 20:
             return 'Low'
@@ -48,5 +51,23 @@ class Issue(models.Model):
         else:
             return 'Critical'
 
+    @property
+    def comments(self):
+        return self.comment_set.filter(reply_to=None).order_by('date')
+
     def __unicode__(self):
         return u"#%d %s" % (self.id, self.title)
+
+class Comment(models.Model):
+    issue = models.ForeignKey(Issue)
+    reply_to = models.ForeignKey('Comment', related_name='reply', null=True, blank=True, default=None)
+    author = models.ForeignKey(User)
+    date = models.DateTimeField(auto_now_add=True)
+    text = models.TextField(max_length=2000)
+
+    @property
+    def children(self):
+        return self.reply.all().order_by('date')
+
+    def __unicode__(self):
+        return u"#%d %s: %s" % (self.issue.id, self.author, self.text[:50])

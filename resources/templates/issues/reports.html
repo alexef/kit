@@ -1,0 +1,36 @@
+{% extends 'issues/issue_list.html' %}
+
+{% block content %}
+    <h2>Report</h2>
+    <h3>Tracker</h3>
+    <table>
+        <tr>
+            <th></th>
+            <th>all</th>
+        </tr>
+        {% for t in trackers %}
+        <tr>
+            <td>{{ t.name }}</td>
+            <td align=center>{{ t.issue_set.all.count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Users</h3>
+    <table>
+        <tr>
+            <th></th>
+            <th>reported</th>
+            <th>assigned</th>
+            <th>closed</th>
+        </tr>
+        {% for u in users %}
+        <tr>
+            <td>{{ u }}</td>
+            <td align=center>{{ u.stats.reported }}</td>
+            <td align=center>{{ u.stats.assigned }}</td>
+            <td align=center>{{ u.stats.closed }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

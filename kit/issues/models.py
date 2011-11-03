@@ -105,6 +105,20 @@ class Issue(models.Model):
             self.active = True
         super(Issue, self).save()
 
+    def get_changes(self, initial, excludes=[]):
+        changes = {}
+        for field in self._meta.fields:
+            if not (field.name in excludes):
+                if field.value_from_object(self) != field.value_from_object(initial):
+                    changes[field.verbose_name] = (field.value_from_object(self),
+                                                       field.value_from_object(initial))
+                    if field.flatchoices:
+                        zero, value = changes[field.verbose_name]
+                        value = dict(field.flatchoices).get(value, value)
+                        changes[field.verbose_name] = (zero, value)
+
+        return changes
+
     def __unicode__(self):
         return u"#%d %s" % (self.id, self.title)
 
@@ -122,6 +136,17 @@ class Comment(models.Model):
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse
         return reverse('issues_view', args=(self.issue.project.name, self.issue.id))
+
+    @classmethod
+    def changed(cls, user, issue, changes=None, text=''):
+        if changes:
+            msg = 'Changed: \n\n'
+            for k,v in changes.iteritems():
+                msg += ' * **%s**: %s \n' % (k, v[1])
+        else:
+            msg = text
+
+        cls.objects.create(issue=issue, author=user, text=msg)
 
     def __unicode__(self):
         return u"#%d %s: %s" % (self.issue.id, self.author, self.text[:50])

@@ -14,7 +14,7 @@
     </div>
 <h1>
     {% if project %}
-    <a href="{% url issues_list project.name %}">{{ project }}</a>
+    <a href="{% url issues_list project.name %}">{{ project.title }}</a>
     {% else %}
     <a href="{% url projects_list %}">KIT</a>
     {% endif %}

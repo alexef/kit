@@ -75,6 +75,7 @@ class Issue(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
 
     dependencies = models.ManyToManyField('Issue', related_name='block', blank=True)
+    subscribers = models.ManyToManyField(User, related_name='subscribed', blank=True)
 
     def get_priority_display(self):
         if self.priority < 20:
@@ -95,6 +96,7 @@ class Issue(models.Model):
         return self.comment_set.filter(reply_to=None).order_by('date')
 
     def save(self):
+        is_new = (self.id is None)
         was_active = self.active
         if self.status in ('f', 'i', 'w'):
             self.active = False
@@ -104,6 +106,9 @@ class Issue(models.Model):
         else:
             self.active = True
         super(Issue, self).save()
+        # after save
+        if is_new:
+            self.subscribers.add(self.reporter)
 
     def get_changes(self, initial, excludes=[]):
         changes = {}

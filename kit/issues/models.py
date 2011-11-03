@@ -60,8 +60,12 @@ class Issue(models.Model):
         return self.comment_set.filter(reply_to=None).order_by('date')
 
     def save(self):
+        was_active = self.active
         if self.status in ('f', 'i', 'w'):
             self.active = False
+            if was_active:
+                if not self.assigned:
+                    self.assigned = self.reporter
         else:
             self.active = True
         super(Issue, self).save()

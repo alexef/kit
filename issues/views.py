@@ -1,7 +1,8 @@
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, UpdateView, CreateView
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from models import Project, Issue, Tracker
+from django import forms
+from models import Project, Issue, Tracker, Comment
 
 class HomePage(TemplateView):
     template_name = 'issues/projects.html'
@@ -18,21 +19,37 @@ class HomePage(TemplateView):
 class IssueListView(ListView):
     def get_queryset(self):
         project = get_object_or_404(Project, name__iexact=self.kwargs['project'])
-        return Issue.objects.filter(project=project)
-
-    def get_context_data(self, **kwargs):
-        context = super(IssueListView, self).get_context_data(**kwargs)
-        context['project'] = self.kwargs['project']
-        context['trackers'] = Tracker.objects.all().order_by('-active', '-importance', '-date')
-        return context
+        return Issue.objects.filter(project=project).order_by('tracker', '-active', 'status', '-date_updated')
 
 class IssueDetailView(DetailView):
     model = Issue
 
     def get_context_data(self, **kwargs):
         context = super(IssueDetailView, self).get_context_data(**kwargs)
-        context['project'] = self.kwargs['project']
+        class CommentForm(forms.ModelForm):
+            class Meta:
+                model = Comment
+                fields = ('text', 'issue')
+                widgets = {'issue': forms.HiddenInput}
+        context['commentform'] = CommentForm(initial={'issue':self.object})
         return context
+
+class IssueEdit(UpdateView):
+    model = Issue
+
+class NoInput(forms.HiddenInput):
+    def render(self, name, value,attrs=None):
+        return ''
+
+class IssueCreate(CreateView):
+    class IssueCreateForm(forms.ModelForm):
+        class Meta:
+            fields = ('tracker', 'priority', 'category', 'title', 'text', 'reporter', 'project')
+            widgets = {'reporter': NoInput, 'project': NoInput}
+            model = Issue
+
+    form_class = IssueCreateForm
+    model = Issue
 
 class IssueReportsView(TemplateView):
     template_name = 'issues/reports.html'
@@ -43,7 +60,6 @@ class IssueReportsView(TemplateView):
         context = dict(params=kwargs)
         context['users'] = User.objects.all()
         context['trackers'] = Tracker.objects.all()
-        context['project'] = project
 
         def stats(user):
             class Stat:
@@ -59,3 +75,6 @@ class IssueReportsView(TemplateView):
         User.stats = stats
 
         return context
+
+class CommentCreate(CreateView):
+    model = Comment

@@ -35,7 +35,7 @@ class Issue(models.Model):
     project = models.ForeignKey(Project)
     title = models.CharField(max_length=200)
     text = models.TextField(max_length=1500, blank=True, default='')
-    active = models.BooleanField(default=True, blank=True)
+    active = models.BooleanField(default=True, blank=True, editable=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
@@ -51,9 +51,20 @@ class Issue(models.Model):
         else:
             return 'Critical'
 
+    def get_absolute_url(self):
+        from django.core.urlresolvers import reverse
+        return reverse('issues_view', args=(self.project.name, self.id))
+
     @property
     def comments(self):
         return self.comment_set.filter(reply_to=None).order_by('date')
+
+    def save(self):
+        if self.status in ('f', 'i', 'w'):
+            self.active = False
+        else:
+            self.active = True
+        super(Issue, self).save()
 
     def __unicode__(self):
         return u"#%d %s" % (self.id, self.title)
@@ -68,6 +79,10 @@ class Comment(models.Model):
     @property
     def children(self):
         return self.reply.all().order_by('date')
+
+    def get_absolute_url(self):
+        from django.core.urlresolvers import reverse
+        return reverse('issues_view', args=(self.issue.project.name, self.issue.id))
 
     def __unicode__(self):
         return u"#%d %s: %s" % (self.issue.id, self.author, self.text[:50])

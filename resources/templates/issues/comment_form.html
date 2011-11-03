@@ -1,0 +1,13 @@
+{% block content %}
+<form method="post" action="{% url comment_new project %}">
+    <table>
+        <tr><td colspan="2"></td>
+            <td rowspan="2" valign="top">
+            <button type="submit">Submit</button></td>
+        </tr>
+    {{ form.as_table }}
+    <input type="hidden" name="author" value="{{ user.id }}" />
+    </table>
+    {% csrf_token %}
+</form>
+{% endblock %}

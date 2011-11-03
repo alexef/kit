@@ -1,0 +1,19 @@
+{% extends 'issues/issue_list.html' %}
+
+{% block content %}
+<h2>{% if object %}Modify {{ object }}{% else %}New issue{% endif %}</h2>
+<form method="post">
+    <table>
+    {{ form.as_table}}
+    </table>
+    <button type="submit">Save</button>
+
+    <a href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url issues_list project.name %}{% endif %}">Cancel</a>
+    {% csrf_token %}
+    {% if object %}
+    {% else %}
+    <input type="hidden" name="project" value="{{ project.id }}" />
+    <input type="hidden" name="reporter" value="{{ user.id }}" />
+    {% endif %}
+</form>
+{% endblock %}

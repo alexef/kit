@@ -1,0 +1,54 @@
+#!/usr/bin/python
+
+import sys
+import re
+import subprocess
+import os.path
+
+def get_commits(old_rev, new_rev):
+	p = subprocess.Popen(['git', 'log', '--pretty=format:%H', '--reverse',  
+                          '%s..%s' % (old_rev, new_rev)], 
+                         stdout=subprocess.PIPE)
+	commit_ids = p.stdout.read().split('\n')
+	commits = []
+	for id in commit_ids:
+		p = subprocess.Popen(['git', 'show', '-s', '%s' % id],
+						stdout=subprocess.PIPE)
+		info = p.stdout.read().split('\n')
+		commits.append({'id': info[0], 'author': info[1], 'date': info[2], 'message': ''.join(info[3:]).strip()})
+	return commits
+
+def main():
+	lines = sys.stdin.readlines()
+
+	# parse log
+	commits = []
+	for line in lines:
+		old_rev, new_rev, ref_name = line.split()
+		commits.extend(get_commits(old_rev, new_rev))
+
+	# now parse commits
+	from django.core.management import setup_environ
+	install_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+	sys.path.append(install_dir)
+	sys.path.append(install_dir + '/kit')
+	import settings
+	setup_environ(settings)
+	from kit.issues.models import Issue
+
+	for c in commits:
+		if 'fix #' in c['message']:
+			m = re.search(r'#\d+', c['message'])
+			id = int(m.group(0)[1:])
+			print "Fixes ", id, 
+			try:
+				issue = Issue.objects.get(pk=int(id))
+			except Issue.DoesNotExist:
+				print "error"
+			else:
+				issue.status = 'f'
+				issue.save()
+				print "ok"
+
+if __name__ == '__main__':
+	main()

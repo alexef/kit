@@ -21,6 +21,18 @@ class IssueListView(ListView):
         project = get_object_or_404(Project, name__iexact=self.kwargs['project'])
         return Issue.objects.filter(project=project).order_by('tracker', '-active', 'status', '-date_updated')
 
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        # apply filters
+        status = request.GET.get('status', 'open')
+        if status:
+            if status == 'open':
+                self.object_list = self.object_list.filter(active=True)
+            elif status == 'closed':
+                self.object_list = self.object_list.filter(active=False)
+        context = self.get_context_data(object_list=self.object_list, status=status)
+        return self.render_to_response(context)
+
 class IssueDetailView(DetailView):
     model = Issue
 

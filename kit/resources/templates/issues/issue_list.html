@@ -10,6 +10,26 @@
 
 {% block content %}
     <h2>Issues</h2>
+
+    <fieldset><legend>Filters</legend>
+    <form action="" method="get" name="form">
+        <table>
+            <tr>
+                <td>Status:</td>
+                <td><select name="status">
+                    <option value=""    {% if not status %}selected{% endif %}>any</option>
+                    <option value="open"    {% if status == 'open' %}selected{% endif %}>open</option>
+                    <option value="closed"  {% if status == 'closed' %}selected{% endif %}>closed</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div class="actions">
+            <a href="#" onclick="form.submit();return false">Apply</a>
+        </div>
+    </form>
+    </fieldset>
+
     <table>
     <tr>
         <th>#</th>

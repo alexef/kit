@@ -1,4 +1,7 @@
 {% block content %}
+{% if not user.is_authenticated %}
+    Please <a href="{% url django.contrib.auth.views.login %}">login</a>
+{% else %}
 <form method="post" action="{% url comment_new project %}">
     <table>
         <tr><td colspan="2"></td>
@@ -10,4 +13,5 @@
     </table>
     {% csrf_token %}
 </form>
+{% endif %}
 {% endblock %}

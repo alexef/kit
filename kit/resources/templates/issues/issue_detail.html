@@ -38,7 +38,9 @@
     <p>{{ object.text|markdown }}</p>
     </div>
     <div class="actions">
-    <a href="{% url issues_edit project object.id %}">Modify</a>
+        {% if user.is_authenticated %}
+        <a href="{% url issues_edit project object.id %}">Modify</a>
+        {% endif %}
     </div>
 
     <div class="comments">

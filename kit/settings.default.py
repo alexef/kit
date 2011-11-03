@@ -154,6 +154,7 @@ LOGGING = {
 }
 
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/user/login/'
 
 # override
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):

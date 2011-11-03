@@ -1,4 +1,6 @@
 from django.views.generic import TemplateView, ListView, DetailView, UpdateView, CreateView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django import forms
@@ -59,6 +61,10 @@ class IssueCreate(CreateView):
             fields = ('tracker', 'priority', 'category', 'title', 'text', 'reporter', 'project')
             widgets = {'reporter': NoInput, 'project': NoInput}
             model = Issue
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(IssueCreate, self).dispatch(*args, **kwargs)
 
     form_class = IssueCreateForm
     model = Issue

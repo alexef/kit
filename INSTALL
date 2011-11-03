@@ -4,3 +4,5 @@ ln -sf settings.default.py settings.py
 ./manage.py syncdb
 ./manage.py runserver
 
+
+For the post-receive, link it to <your-repo>/hooks/post-receive from <code>/utils/

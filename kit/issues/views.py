@@ -64,6 +64,19 @@ class IssueDetailView(DetailView):
 class IssueEdit(UpdateView):
     model = Issue
 
+    def post(self, request, *args, **kwargs):
+        self.user = request.user
+        return super(UpdateView, self).post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        new_object = form.save(commit=False)
+        object = Issue.objects.get(pk=self.object.pk)
+        # get differences
+        changes = new_object.get_changes(object)
+        if changes:
+            Comment.changed(self.user, object, changes)
+        return super(UpdateView, self).form_valid(form)
+
 class NoInput(forms.HiddenInput):
     def render(self, name, value, attrs=None):
         return ''

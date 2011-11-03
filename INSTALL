@@ -1,0 +1,6 @@
+pip install -r requirements-pip
+cd kit
+ln -sf settings.default.py settings.py
+./manage.py syncdb
+./manage.py runserver
+

@@ -1,0 +1,4 @@
+## Use this file to install automatically all deps
+## Usage: pip install -U -r /path/to/this/file
+Django>=1.3
+markdown

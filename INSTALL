@@ -6,4 +6,3 @@ ln -sf settings.default.py settings.py
 
 
 For the post-receive, link it to <your-repo>/hooks/post-receive from <code>/utils/
-.

@@ -29,6 +29,9 @@
             {% if project %}
             <li><a href="{% url issues_list project.name %}" class="{% if module == 'issues' %}{% if action != 'new' %}active{% endif %}{% endif %}">Issues</a></li>
                 <li><a href="{% url issues_new project.name %}" class="{% if action == 'new' %}active{% endif %}">New issue</a></li>
+                {% if role == 'admin' %}
+                    <li><a href="{% url project_manage project %}" class="{% if module == 'manage' %}active{% endif %}">Manage</a></li>
+                {% endif %}
             {% endif %}
             <li><a href="{% url projects_list %}" class="{% if module == '' %}active{% endif %}">Projects</a></li>
         </ul>

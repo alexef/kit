@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django import forms
-from models import Project, Issue, Tracker, Comment
+from models import Project, ProjectUser, Issue, Tracker, Comment
 
 class HomePage(TemplateView):
     template_name = 'issues/projects.html'
@@ -17,6 +17,19 @@ class HomePage(TemplateView):
         context = self.get_context_data(**kwargs)
         context['projects'] = projects
         return self.render_to_response(context)
+
+class ManageProject(TemplateView):
+    template_name = 'issues/project_manage.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ManageProject, self).get_context_data(**kwargs)
+        class PUForm(forms.ModelForm):
+            class Meta:
+                model = ProjectUser
+                widgets = {'project': forms.HiddenInput}
+        project = get_object_or_404(Project, name__iexact=self.kwargs['project'])
+        context['puform'] = PUForm(initial={'project': project})
+        return context
 
 class IssueListView(ListView):
     def get_queryset(self):
@@ -52,7 +65,7 @@ class IssueEdit(UpdateView):
     model = Issue
 
 class NoInput(forms.HiddenInput):
-    def render(self, name, value,attrs=None):
+    def render(self, name, value, attrs=None):
         return ''
 
 class IssueCreate(CreateView):
@@ -96,3 +109,9 @@ class IssueReportsView(TemplateView):
 
 class CommentCreate(CreateView):
     model = Comment
+
+class PUCreate(CreateView):
+    model = ProjectUser
+
+class PUUpdate(UpdateView):
+    model = ProjectUser

@@ -1,11 +1,46 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class ProjectUser(models.Model):
+    ROLES = (('a', 'admin'), ('d', 'developer'), ('r', 'reporter'))
+    user = models.ForeignKey(User)
+    project = models.ForeignKey('Project')
+    role = models.CharField(max_length=1, choices=ROLES, default='r')
+
+    class Meta:
+        unique_together = ('user', 'project')
+
+    @classmethod
+    def can_read(cls, user, project):
+        try:
+            exists = ProjectUser.objects.get(project=project, user=user)
+            return True
+        except:
+            return user.is_superuser
+
+    @classmethod
+    def get_role(cls, user, project):
+        try:
+            exists = ProjectUser.objects.get(project=project, user=user)
+            return exists.get_role_display()
+        except:
+            if user.is_superuser:
+                return 'admin'
+            return ''
+
+    def get_absolute_url(self):
+        return '/%s/manage/' % self.project.name
+
+    def __unicode__(self):
+        return self.user.__unicode__() + '-' + self.project.__unicode__()
+
 class Project(models.Model):
     name = models.CharField(max_length=64, unique=True)
     title = models.CharField(max_length=200)
     description = models.TextField(max_length=2000)
     public = models.BooleanField(default=False, blank=True)
+
+    users = models.ManyToManyField(User, through=ProjectUser, blank=True)
 
     def __unicode__(self):
         return self.name

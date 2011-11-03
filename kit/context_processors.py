@@ -1,4 +1,4 @@
-from kit.issues.models import Project
+from kit.issues.models import Project, ProjectUser
 
 def module(request):
     parts = request.path.split('/')
@@ -14,4 +14,6 @@ def module(request):
         project = Project.objects.get(name__iexact=project)
     except Project.DoesNotExist:
         project = None
-    return dict(module=module, project=project, action=action)
+
+    role = ProjectUser.get_role(request.user, project)
+    return dict(module=module, project=project, action=action, role=role)

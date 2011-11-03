@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Manage {{ project }}</h2>
+
+    <h3>Users</h3>
+    <table>
+    {% for u in project.projectuser_set.all %}
+        <tr>
+            <td>{{ u.user }}</td>
+            <td>{{ u.get_role_display }}</td>
+            <td><a href="{% url project_manage_edit project u.id %}">Edit</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    <h4>Add user to project</h4>
+    <form method="post" action="{% url project_manage_add project %}">
+        <table>
+        {{ puform.as_table }}
+        </table>
+        <button type="submit">Add</button>
+        {% csrf_token %}
+    </form>
+{% endblock %}

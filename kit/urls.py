@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.conf import settings
 admin.autodiscover()
 
-from kit.issues.views import HomePage
+from kit.issues.views import HomePage, ManageProject, PUCreate, PUUpdate
 
 urlpatterns = patterns('',
     # Examples:
@@ -12,6 +12,9 @@ urlpatterns = patterns('',
 
     url(r'^$', HomePage.as_view(), name='projects_list'),
     url(r'^(?P<project>.+)/issues/', include('kit.issues.urls')),
+    url(r'^(?P<project>.+)/manage/$', ManageProject.as_view(), name='project_manage'),
+    url(r'^(?P<project>.+)/manage/add/$', PUCreate.as_view(), name='project_manage_add'),
+    url(r'^(?P<project>.+)/manage/edit/(?P<pk>\d+)/$', PUUpdate.as_view(), name='project_manage_edit'),
 
     url(r'^user/login/', 'django.contrib.auth.views.login'),
     url(r'^user/logout/', 'django.contrib.auth.views.logout', dict(next_page='/')),

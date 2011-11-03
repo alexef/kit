@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+print "I'm here"
+
 import sys
 import re
 import subprocess

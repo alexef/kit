@@ -179,7 +179,7 @@ class Comment(models.Model):
             msg = text
 
         newcomm = cls.objects.create(issue=issue, author=user, text=msg)
-        cls.alert(issue, user, text)
+        cls.alert(issue, user, msg)
 
     @classmethod
     def alert(cls, issue, user, text, new=False):

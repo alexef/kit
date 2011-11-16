@@ -129,9 +129,9 @@ class Issue(models.Model):
                     changes[field.verbose_name] = (field.value_from_object(self),
                                                        field.value_from_object(initial))
                     if field.flatchoices:
-                        zero, value = changes[field.verbose_name]
+                        value, zero = changes[field.verbose_name]
                         value = dict(field.flatchoices).get(value, value)
-                        changes[field.verbose_name] = (zero, value)
+                        changes[field.verbose_name] = (value, zero)
                     elif field.name in ('assigned', 'reporter'):
                         def get_user(field, obj):
                             id = field.value_from_object(obj)

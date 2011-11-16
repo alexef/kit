@@ -31,6 +31,17 @@
         {% for i in object.block.all %}
             {% issue i %}
         {% endfor %}
+        <p><strong>Subscribers</strong></p>
+        {% for i in object.subscribers.all %}
+            {{ i }}
+        {% endfor %}
+        <a href="#">
+        {% if is_subscribed %}
+        Unsubscribe
+        {% else %}
+        Subscribe
+        {% endif %}
+        </a>
     </td>
     </tr></table>
 

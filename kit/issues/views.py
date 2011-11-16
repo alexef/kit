@@ -1,5 +1,6 @@
 from django.views.generic import TemplateView, ListView, DetailView, UpdateView, CreateView
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
@@ -51,6 +52,10 @@ class IssueListView(ListView):
 class IssueDetailView(DetailView):
     model = Issue
 
+    def get(self, request, **kwargs):
+        self.user = request.user
+        return super(IssueDetailView, self).get(request, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(IssueDetailView, self).get_context_data(**kwargs)
         class CommentForm(forms.ModelForm):
@@ -59,10 +64,17 @@ class IssueDetailView(DetailView):
                 fields = ('text', 'issue')
                 widgets = {'issue': forms.HiddenInput}
         context['commentform'] = CommentForm(initial={'issue':self.object})
+        context['is_subscribed'] = (self.user in self.object.subscribers.all())
         return context
+
+class IssueForm(forms.ModelForm):
+    class Meta:
+        model = Issue
+        exclude = ('subscribers', )
 
 class IssueEdit(UpdateView):
     model = Issue
+    form_class = IssueForm
 
     def post(self, request, *args, **kwargs):
         self.user = request.user
@@ -75,7 +87,8 @@ class IssueEdit(UpdateView):
         changes = new_object.get_changes(object)
         if changes:
             Comment.changed(self.user, object, changes)
-        return super(UpdateView, self).form_valid(form)
+        new_object.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 class NoInput(forms.HiddenInput):
     def render(self, name, value, attrs=None):

@@ -105,11 +105,20 @@ class Issue(models.Model):
                     self.assigned = self.reporter
         else:
             self.active = True
-        super(Issue, self).save()
-        # after save
+        # pre save
         if is_new:
+            super(Issue, self).save()
             self.subscribers.add(self.reporter)
+            if self.assigned:
+                self.subscribers.add(self.assigned)
+        else:
+            # assigned to
+            had_assigned = Issue.objects.get(id=self.id).assigned
+            if (had_assigned != self.assigned) and self.assigned:
+                self.subscribers.add(self.assigned)
 
+        super(Issue, self).save()
+        
     def get_changes(self, initial, excludes=[]):
         changes = {}
         for field in self._meta.fields:
@@ -121,11 +130,17 @@ class Issue(models.Model):
                         zero, value = changes[field.verbose_name]
                         value = dict(field.flatchoices).get(value, value)
                         changes[field.verbose_name] = (zero, value)
+                    elif field.name in ('assigned', 'reporter'):
+                        changes[field.verbose_name] = (User.objects.get(id=field.value_from_object(self)),
+                            User.objects.get(id=field.value_from_object(initial)))
 
         return changes
 
     def __unicode__(self):
         return u"#%d %s" % (self.id, self.title)
+
+    def subscribers_display(self):
+        return ','.join(map(unicode, self.subscribers.all()))
 
 class Comment(models.Model):
     issue = models.ForeignKey(Issue)
@@ -147,7 +162,7 @@ class Comment(models.Model):
         if changes:
             msg = 'Changed: \n\n'
             for k,v in changes.iteritems():
-                msg += ' * **%s**: %s \n' % (k, v[1])
+                msg += ' * **%s**: %s \n' % (k, v[0])
         else:
             msg = text
 

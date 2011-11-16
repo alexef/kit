@@ -139,11 +139,11 @@ class IssueReportsView(TemplateView):
             class Stat:
                 def __getitem__(self, item):
                     if item == 'reported':
-                        return Issue.objects.filter(reporter=user).count()
+                        return Issue.objects.filter(reporter=user, project=project).count()
                     elif item == 'assigned':
-                        return Issue.objects.filter(assigned=user).count()
+                        return Issue.objects.filter(assigned=user, project=project).count()
                     elif item == 'closed':
-                        return Issue.objects.filter(assigned=user,active=False).count()
+                        return Issue.objects.filter(assigned=user, active=False, project=project).count()
                     return None
             return Stat()
         User.stats = stats

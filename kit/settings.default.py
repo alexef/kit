@@ -156,6 +156,8 @@ LOGGING = {
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/user/login/'
 
+KIT_URL = 'http://localhost:8000' # without /, because i'm not using sites.
+
 # override
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *

@@ -85,9 +85,9 @@ class IssueEdit(UpdateView):
         object = Issue.objects.get(pk=self.object.pk)
         # get differences
         changes = new_object.get_changes(object)
+        new_object.save()
         if changes:
             Comment.changed(self.user, object, changes)
-        new_object.save()
         return HttpResponseRedirect(self.get_success_url())
 
 class NoInput(forms.HiddenInput):
@@ -135,6 +135,16 @@ class IssueReportsView(TemplateView):
 
 class CommentCreate(CreateView):
     model = Comment
+
+    def post(self, request, *args, **kwargs):
+        self.user = request.user
+        return super(CommentCreate, self).post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.object = form.save()
+        text = 'New comment: \n\n' + self.object.text
+        Comment.alert(self.object.issue, self.user, text)
+        return HttpResponseRedirect(self.get_success_url())
 
 class PUCreate(CreateView):
     model = ProjectUser

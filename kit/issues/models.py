@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.conf import settings
 
 class ProjectUser(models.Model):
     ROLES = (('a', 'admin'), ('d', 'developer'), ('r', 'reporter'))
@@ -166,7 +168,16 @@ class Comment(models.Model):
         else:
             msg = text
 
-        cls.objects.create(issue=issue, author=user, text=msg)
+        newcomm = cls.objects.create(issue=issue, author=user, text=msg)
+        cls.alert(issue, user, text)
+
+    @classmethod
+    def alert(cls, issue, user, text, new=False):
+        subject = '[%s] %s %s #%d' % (issue.project, user, 'changed' if not new else 'created', issue.id)
+        mail_from = ''
+        mail_to = [u.email for u in issue.subscribers.all()]
+        text += '\n\n'+ settings.KIT_URL + issue.get_absolute_url()
+        send_mail(subject, text, mail_from, mail_to, fail_silently=True)
 
     def __unicode__(self):
         return u"#%d %s: %s" % (self.issue.id, self.author, self.text[:50])

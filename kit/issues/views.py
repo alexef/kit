@@ -67,6 +67,13 @@ class IssueDetailView(DetailView):
         context['is_subscribed'] = (self.user in self.object.subscribers.all())
         return context
 
+class ToggleSubscribe(DetailView):
+    def get(self, request, **kwargs):
+        user = request.user
+        issue = get_object_or_404(Issue, pk=kwargs['pk'])
+        issue.toggle_subscribe(user)
+        return HttpResponseRedirect(issue.get_absolute_url())
+
 class IssueForm(forms.ModelForm):
     class Meta:
         model = Issue

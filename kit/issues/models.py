@@ -148,6 +148,12 @@ class Issue(models.Model):
     def subscribers_display(self):
         return ','.join(map(unicode, self.subscribers.all()))
 
+    def toggle_subscribe(self, user):
+        if user in self.subscribers.all():
+            self.subscribers.remove(user)
+        else:
+            self.subscribers.add(user)
+
 class Comment(models.Model):
     issue = models.ForeignKey(Issue)
     reply_to = models.ForeignKey('Comment', related_name='reply', null=True, blank=True, default=None)

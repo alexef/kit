@@ -108,6 +108,16 @@ class IssueCreate(CreateView):
             widgets = {'reporter': NoInput, 'project': NoInput}
             model = Issue
 
+    def post(self, request, *args, **kwargs):
+        self.user = request.user
+        return super(IssueCreate, self).post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.object = form.save()
+        text = 'Created new %s: %s\n\n%s' % (self.object.tracker, self.object.title, self.object.text)
+        Comment.alert(self.object, self.user, text, new=True)
+        return HttpResponseRedirect(self.object.get_absolute_url())
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(IssueCreate, self).dispatch(*args, **kwargs)

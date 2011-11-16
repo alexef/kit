@@ -184,8 +184,12 @@ class Comment(models.Model):
     @classmethod
     def alert(cls, issue, user, text, new=False):
         subject = '[%s] %s %s #%d' % (issue.project, user, 'changed' if not new else 'created', issue.id)
-        mail_from = ''
-        mail_to = [u.email for u in issue.subscribers.all()]
+        mail_from = '@'.join((settings.EMAIL_HOST_USER, settings.EMAIL_HOST))
+        if new:
+            mail_to = [u.email for u in issue.project.users.all()]
+        else:
+            mail_to = [u.email for u in issue.subscribers.all()]
+        mail_to = list(set(mail_to))
         text += '\n\n'+ settings.KIT_URL + issue.get_absolute_url()
         send_mail(subject, text, mail_from, mail_to, fail_silently=True)
 

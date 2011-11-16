@@ -133,8 +133,12 @@ class Issue(models.Model):
                         value = dict(field.flatchoices).get(value, value)
                         changes[field.verbose_name] = (zero, value)
                     elif field.name in ('assigned', 'reporter'):
-                        changes[field.verbose_name] = (User.objects.get(id=field.value_from_object(self)),
-                            User.objects.get(id=field.value_from_object(initial)))
+                        def get_user(field, obj):
+                            id = field.value_from_object(obj)
+                            try: return User.objects.get(id=id)
+                            except: return None
+                        changes[field.verbose_name] = (get_user(field, self),
+                            get_user(field, initial))
 
         return changes
 

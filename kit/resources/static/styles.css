@@ -106,3 +106,37 @@ table.description strong {
     min-width: 100px;
     display:inline-block;
 }
+img.avatar {
+    margin: 2px;
+    border: 3px solid #eee;
+    float: left;
+}
+img.avatar-min {
+    width: 32px;
+}
+div.comment-head {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 4px;
+}
+div.comment-head strong {
+    font-size: 0.9em;
+}
+div.comment-body {
+    margin-left: 50px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 4px;
+}
+div.comment-body ul, div.comment-body li{
+    margin: 4px;
+}
+div.comment-body p {
+    margin: 2px;
+}
+div.comment-spacer {
+    clear: left;
+}
+span.date {
+    font-color: #444;
+    font-size: 0.9em;
+}

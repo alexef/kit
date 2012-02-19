@@ -1,11 +1,16 @@
 {% load markup %}
 {% load comments %}
 <div class="comment">
-    <p><strong>{{ c.author }}</strong> on {{ c.date }}</p>
-    <p>{{ c.text|markdown }}</p>
-    <div class="replies">
-    {% for rc in c.children %}
-        {% do_comment rc %}
-    {% endfor %}
+    <img class="avatar avatar-min" src="{% gravatar c.author %}" />
+
+    <div class="comment-head"><strong>{{ c.author }}</strong> on <span class="date">{{ c.date }}</span></div>
+    <div class="comment-body">
+        <p>{{ c.text|markdown }}</p>
+        <div class="replies">
+        {% for rc in c.children %}
+            {% do_comment rc %}
+        {% endfor %}
+        </div>
     </div>
 </div>
+<div class="comment-spacer"></div>

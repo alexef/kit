@@ -11,11 +11,12 @@
     <h2>{{ object.tracker }} #{{ object.pk }}</h2>
     <div class="issue">
     <h3>{{ object.title }}</h3>
-    <table><tr>
-     <td width="30%">
-    <p><strong>Status:</strong> {{ object.get_status_display }}</p>
-    <p><strong>Priority:</strong> {{ object.get_priority_display }}</p>
-    <p><strong>Assigned to:</strong> {{ object.assigned }}</p>
+
+    <table class="description"><tr>
+     <td valign="top" width="30%">
+        <p><strong>Status:</strong> {{ object.get_status_display }}</p>
+        <p><strong>Priority:</strong> {{ object.get_priority_display }}</p>
+        <p><strong>Assigned to:</strong> {{ object.assigned }}</p>
     </td>
     <td valign="top" width="30%">
     <p><strong>Reported by:</strong> {{ object.reporter }}</p>
@@ -23,15 +24,17 @@
     <p><strong>Last updated:</strong> {{ object.date_updated }}</p>
     </td>
     <td valign="top" width="30%">
-        <p><strong>Depends</strong></p>
+        <p><strong>Depends:</strong>
         {% for i in object.dependencies.all %}
             {% issue i %}
         {% endfor %}
-        <p><strong>Blocks</strong></p>
+        </p>
+        <p><strong>Blocks:</strong>
         {% for i in object.block.all %}
             {% issue i %}
         {% endfor %}
-        <p><strong>Subscribers</strong></p>
+        </p>
+        <p><strong>Subscribers</strong>
         {% for i in object.subscribers.all %}
             {{ i }}
         {% endfor %}
@@ -42,6 +45,7 @@
         Subscribe
         {% endif %}
         </a>
+        </p>
     </td>
     </tr></table>
 

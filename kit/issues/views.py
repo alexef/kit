@@ -89,11 +89,14 @@ class IssueEdit(UpdateView):
         return super(UpdateView, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        new_object = form.save(commit=False)
         object = Issue.objects.get(pk=self.object.pk)
+        new_object = form.save(commit=False)
+
         # get differences
-        changes = new_object.get_changes(object)
+        changes = new_object.get_changes(object, dict(dependencies=form.cleaned_data['dependencies']))
+
         new_object.save()
+        form.save_m2m()
         if changes:
             Comment.changed(self.user, object, changes)
         return HttpResponseRedirect(self.get_success_url())

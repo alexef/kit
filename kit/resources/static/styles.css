@@ -102,3 +102,7 @@ div#modify-form {
 textarea#id_text, input#id_title {
     width: 500px;
 }
+table.description strong {
+    min-width: 100px;
+    display:inline-block;
+}

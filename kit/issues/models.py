@@ -123,7 +123,7 @@ class Issue(models.Model):
 
         super(Issue, self).save()
         
-    def get_changes(self, initial, excludes=[]):
+    def get_changes(self, initial, extra=None, excludes=[]):
         changes = {}
         for field in self._meta.fields:
             if not (field.name in excludes):
@@ -141,7 +141,10 @@ class Issue(models.Model):
                             except: return None
                         changes[field.verbose_name] = (get_user(field, self),
                             get_user(field, initial))
-
+        if extra:
+            for k, v in extra.iteritems():
+                if set(getattr(initial, k).all()) != set(v):
+                    changes[k] = (','.join([str(a) for a in v]), '')
         return changes
 
     def __unicode__(self):

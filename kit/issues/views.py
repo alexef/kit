@@ -64,7 +64,9 @@ class IssueDetailView(DetailView):
                 model = Comment
                 fields = ('text', 'issue')
                 widgets = {'issue': forms.HiddenInput}
-        context['modifyform'] = IssueForm(instance=self.object)
+        form = IssueForm(instance=self.object)
+        form.bind_fields()
+        context['modifyform'] = form
         context['commentform'] = CommentForm(initial={'issue':self.object})
         context['is_subscribed'] = (self.user in self.object.subscribers.all())
         return context
@@ -80,6 +82,17 @@ class IssueForm(forms.ModelForm):
     class Meta:
         model = Issue
         exclude = ('subscribers', )
+        
+    def bind_fields(self, project=None):
+        if project is None:
+            if not self.instance:
+                return
+            else:
+                project = self.instance.project
+        self.fields['dependencies'].queryset = project.issue_set
+        self.fields['category'].queryset = project.category_set
+        self.fields['assigned'].queryset = project.users
+        self.fields['reporter'].queryset = project.users
 
 class IssueEdit(UpdateView):
     model = Issue
@@ -113,6 +126,12 @@ class IssueCreate(CreateView):
             widgets = {'reporter': NoInput, 'project': NoInput}
             model = Issue
 
+    def get_form(self, form_class):
+        form = form_class(**self.get_form_kwargs())
+        project = get_object_or_404(Project, name__iexact=self.kwargs['project'])
+        form.fields['category'].queryset = project.category_set
+        return form
+
     def post(self, request, *args, **kwargs):
         self.user = request.user
         return super(IssueCreate, self).post(request, *args, **kwargs)
@@ -125,6 +144,7 @@ class IssueCreate(CreateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
+        self.kwargs = kwargs
         return super(IssueCreate, self).dispatch(*args, **kwargs)
 
     form_class = IssueCreateForm

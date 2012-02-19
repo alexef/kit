@@ -72,7 +72,7 @@ def main():
             if issue.status != 'f':
                 issue.status = 'f'
                 issue.save()
-                Comment.changed(author, issue, changes=dict(status=('','Fixed')))
+                Comment.changed(author, issue, changes=dict(status=('Fixed','')))
 
 
 if __name__ == '__main__':

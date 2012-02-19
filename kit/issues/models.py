@@ -63,11 +63,13 @@ class Category(models.Model):
 class Issue(models.Model):
     STATUSES = (('n', 'New'), ('c', 'Confirmed'), ('p', 'In progress'), ('r', 'Resolved'),
                 ('f', 'Fixed'), ('i', 'Invalid'), ('w', "Won't fix"))
+    PRIORITIES = ((10, 'Low'), (20, 'Medium'), (50, 'Normal'), (70, 'High'), (100, 'Critical'))
+
     tracker = models.ForeignKey(Tracker)
     status = models.CharField(max_length=1, choices=STATUSES, default='n', blank=True)
     reporter = models.ForeignKey(User, related_name='reporter')
     assigned = models.ForeignKey(User, related_name='assigned', default=None, blank=True, null=True)
-    priority = models.IntegerField(default=20, blank=True) # 0 to 100
+    priority = models.IntegerField(default=50, blank=True, choices=PRIORITIES) # 0 to 100
     category = models.ForeignKey(Category, blank=True, null=True, default=None)
     project = models.ForeignKey(Project)
     title = models.CharField(max_length=200)

@@ -48,19 +48,77 @@
     <p><strong>Description</strong></p>
     <p>{{ object.text|markdown }}</p>
     </div>
+
     <div class="actions">
         {% if user.is_authenticated %}
-        <a href="{% url issues_edit project object.id %}">Modify</a>
+        <a href="{% url issues_edit project object.id %}" onclick="show_form(); return false;">Modify</a>
         {% endif %}
+    </div>
+
+    <div class="hidden" id="modify-form">
+        <p>
+            <strong>Update</strong> <a href="#" onclick="toggle_more(); return false;">more</a>
+        </p>
+
+        <form action="{% url issues_edit project object.id %}" method="post">
+            <div class="hidden" id="modify-more">
+                <table>
+                    <tr>
+                        <td width="15%"><label for="id_tracker">Tracker:</label></td>
+                        <td>{{ modifyform.tracker}}</td>
+                    </tr>
+                    <tr>
+                        <td><label for="id_reporter">Reporter:</label></td>
+                        <td>{{ modifyform.reporter}}</td>
+                    </tr>
+                    <tr>
+                        <td><label for="id_title">Title:</label></td>
+                        <td>{{ modifyform.title}}</td>
+                    </tr>
+                    <tr>
+                        <td valign="top"><label for="id_text">Text:</label></td>
+                        <td>{{ modifyform.text}}</td>
+                    </tr>
+                </table>
+                <div class="hidden">
+                    {{ modifyform.project }}
+                </div>
+            </div>
+            <table>
+                <tr>
+                    <td width="15%"><label for="id_status">Status:</label></td>
+                    <td width="35%">{{ modifyform.status }}</td>
+
+                    <td><label for="id_dependencies">Depends:</label></td>
+                    <td rowspan="4">{{ modifyform.dependencies }}</td>
+                </tr>
+                <tr>
+                    <td><label for="id_assigned">Assigned:</label></td>
+                    <td>{{ modifyform.assigned}}</td>
+                </tr>
+                <tr>
+                    <td><label for="id_priority">Priority:</label></td>
+                    <td>{{ modifyform.priority }}</td>
+                </tr>
+                <tr>
+                    <td valign="top"><label for="id_category">Category:</label></td>
+                    <td valign="top">{{ modifyform.category }}</td>
+                </tr>
+            </table>
+            <div class="actions">
+                <button type="submit">Save</button>
+            </div>
+            {% csrf_token %}
+        </form>
     </div>
 
     <div class="comments">
     {% for c in object.comments %}
-        {% comment c %}
+        {% do_comment c %}
     {% endfor %}
     </div>
 
-    <div class="new-comment">
+    <div class="new-comment" id="new-comment">
         <h4>New comment</h4>
         {% include 'issues/comment_form.html' with form=commentform %}
     </div>

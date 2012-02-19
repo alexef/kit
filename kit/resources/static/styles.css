@@ -91,3 +91,14 @@ div.actions {
 form table th {
     vertical-align: top;
 }
+div.hidden {
+    display: none;
+}
+div#modify-form {
+    margin: 4px;
+    padding: 4px;
+    border: 1px solid #888;
+}
+textarea#id_text, input#id_title {
+    width: 500px;
+}

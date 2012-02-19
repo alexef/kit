@@ -63,6 +63,7 @@ class IssueDetailView(DetailView):
                 model = Comment
                 fields = ('text', 'issue')
                 widgets = {'issue': forms.HiddenInput}
+        context['modifyform'] = IssueForm(instance=self.object)
         context['commentform'] = CommentForm(initial={'issue':self.object})
         context['is_subscribed'] = (self.user in self.object.subscribers.all())
         return context

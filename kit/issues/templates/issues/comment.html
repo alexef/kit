@@ -5,7 +5,7 @@
     <p>{{ c.text|markdown }}</p>
     <div class="replies">
     {% for rc in c.children %}
-        {% comment rc %}
+        {% do_comment rc %}
     {% endfor %}
     </div>
 </div>

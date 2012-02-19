@@ -3,5 +3,5 @@ from django import template
 register = template.Library()
 
 @register.simple_tag
-def comment(comm):
+def do_comment(comm):
     return render_to_string('issues/comment.html', dict(c=comm))

@@ -45,6 +45,7 @@
         <th>Priority</th>
         <th>Subject</th>
         <th>Assigned</th>
+        <th>Category</th>
         <th>Updated</th>
     </tr>
 
@@ -56,6 +57,7 @@
         <td class="pri-{{ issue.get_priority_display|lower }}">{{ issue.get_priority_display }}</td>
         <td><a href="{% url issues_view issue.project issue.pk %}">{{ issue.title }}</a></td>
         <td align="center">{% if issue.assigned %}{{ issue.assigned }}{% else %}-{% endif %}</td>
+        <td>{% if issue.category %}{{ issue.category }}{% else %}-{% endif %}</td>
         <td>{{ issue.date_updated }}</td>
     </tr>
     {% endfor %}

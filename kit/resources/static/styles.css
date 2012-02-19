@@ -46,6 +46,7 @@ code {
 }
 #menu ul li {
     display: inline-block;
+    margin-left: 4px;
 }
 #menu ul li a {
     text-decoration: none;

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Preferences in {{ project }}</h2>
+
+    <form method="post">
+        <p>Email notifications:</p>
+        <table>
+            {{ prefsform.as_table }}
+        </table>
+        <button type="submit">Save</button>
+        {% csrf_token %}
+    </form>
+{% endblock %}

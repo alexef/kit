@@ -58,6 +58,13 @@ class Project(models.Model):
                     return project.issue_set.filter(active=False).count()
         return Stat()
 
+    def get_created_subscribers(self):
+        """ Return a list of project users subscribed to "Issue created" notifications
+        """
+        exclude = [up.user.id for up in UserPreference.objects.filter(project=self, name='subscribe_created', value='False')]
+        users = self.users.exclude(id__in=exclude)
+        return users
+
     def __unicode__(self):
         return self.name
 
@@ -173,6 +180,10 @@ class Issue(models.Model):
         else:
             self.subscribers.add(user)
 
+    def get_email_subscribers(self):
+        exclude = [up.user.id for up in UserPreference.objects.filter(project=self.project, name='subscribe_updated', value='False')]
+        return self.subscribers.exclude(id__in=exclude)
+
 class Comment(models.Model):
     issue = models.ForeignKey(Issue)
     reply_to = models.ForeignKey('Comment', related_name='reply', null=True, blank=True, default=None)
@@ -205,12 +216,34 @@ class Comment(models.Model):
         subject = '[%s] %s %s #%d' % (issue.project, user, 'changed' if not new else 'created', issue.id)
         mail_from = '@'.join((settings.EMAIL_HOST_USER, settings.EMAIL_HOST))
         if new:
-            mail_to = [u.email for u in issue.project.users.all()]
+            mail_to = [u.email for u in issue.project.get_created_subscribers()]
         else:
-            mail_to = [u.email for u in issue.subscribers.all()]
+            mail_to = [u.email for u in issue.get_email_subscribers()]
         mail_to = list(set(mail_to))
         text += '\n\n'+ settings.KIT_URL + issue.get_absolute_url()
         send_mail(subject, text, mail_from, mail_to, fail_silently=True)
 
     def __unicode__(self):
         return u"#%d %s: %s" % (self.issue.id, self.author, self.text[:50])
+
+
+class UserPreference(models.Model):
+    TYPES = (('s', 'str'),('b', 'boolean'))
+    user = models.ForeignKey(User)
+    project = models.ForeignKey(Project, null=True, blank=True)
+    name = models.CharField(max_length=128)
+    value = models.CharField(max_length=256)
+
+    type = models.CharField(max_length=1, choices=TYPES, default='b', blank=True)
+
+    def get_value(self):
+        if self.type == 'b':
+            return self.value == 'True'
+        return self.value
+
+    def set_value(self, value):
+        if self.type == 'b':
+            self.value = 'True' if value else 'False'
+        else:
+            self.value = value
+        self.save()

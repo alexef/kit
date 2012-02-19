@@ -10,3 +10,8 @@ admin.site.register(Tracker)
 admin.site.register(Category)
 admin.site.register(Issue, IssueAdmin)
 admin.site.register(Comment)
+
+class UPAdmin(admin.ModelAdmin):
+    list_display = ('user', 'project', 'name', 'value')
+
+admin.site.register(UserPreference, UPAdmin)

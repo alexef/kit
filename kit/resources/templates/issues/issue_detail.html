@@ -35,6 +35,11 @@
         {% endfor %}
         </p>
         <p><strong>Subscribers</strong>
+        <!--email:
+            {% for i in object.get_email_subscribers %}
+            {{ i }}
+        {% endfor %}
+        all:-->
         {% for i in object.subscribers.all %}
             {{ i }}
         {% endfor %}

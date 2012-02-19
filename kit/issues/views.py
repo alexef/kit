@@ -4,8 +4,9 @@ from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django import forms
-from models import Project, ProjectUser, Issue, Tracker, Comment
+from models import Project, ProjectUser, Issue, Tracker, Comment, UserPreference
 
 class HomePage(TemplateView):
     template_name = 'issues/projects.html'
@@ -172,3 +173,34 @@ class PUCreate(CreateView):
 
 class PUUpdate(UpdateView):
     model = ProjectUser
+
+class Preferences(TemplateView):
+    template_name = 'issues/preferences.html'
+
+    class PrefsForm(forms.Form):
+        subscribe_created = forms.BooleanField(initial=True, required=False)
+        subscribe_updated = forms.BooleanField(initial=True, required=False)
+
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        return super(Preferences, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        project = get_object_or_404(Project, name__iexact=kwargs['project'])
+        user = self.request.user
+
+        prefs = {}
+        for up in UserPreference.objects.filter(project=project, user=user).all():
+            prefs[up.name] = up.get_value()
+
+        return {'prefsform': Preferences.PrefsForm(initial=prefs)}
+
+    def post(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, name__iexact=kwargs['project'])
+        form = Preferences.PrefsForm(request.POST)
+        if form.is_valid():
+            for k,v in form.cleaned_data.iteritems():
+                up, new = UserPreference.objects.get_or_create(project=project, user=request.user, name=k)
+                up.set_value(v)
+
+        return HttpResponseRedirect(reverse('preferences', args=(project,)))

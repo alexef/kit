@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+    <h4>Activity</h4>
+{% endblock %}
+
+{% block content %}
+    <h2>Activity</h2>
+    <p>Latest 100 comments from the current project's issues.</p>
+
+    {% for day,object_list in data %}
+        <h3>{{ day.date }}</h3>
+        <div class="day-body">
+        {% for entry in object_list %}
+            {% include 'activity/stream_entry.html' with c=entry %}
+        {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}

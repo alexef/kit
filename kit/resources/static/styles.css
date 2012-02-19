@@ -123,7 +123,6 @@ div.comment-head strong {
 }
 div.comment-body {
     margin-left: 50px;
-    margin-top: 5px;
     margin-bottom: 5px;
     padding: 4px;
 }
@@ -139,4 +138,7 @@ div.comment-spacer {
 span.date {
     font-color: #444;
     font-size: 0.9em;
+}
+div.day-body {
+    margin-left: 20px;
 }

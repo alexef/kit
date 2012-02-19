@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>{% block title %}KIT{% endblock %}</title>
+    <title>{% block title %}KIT{% if project %} > {{ project.title }}{% endif %}{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="/static/styles.css" />
     <script type="text/javascript" src="/static/js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="/static/js/issues.js"></script>
@@ -29,8 +29,9 @@
    <div id="menu">
         <ul>
             {% if project %}
-            <li><a href="{% url issues_list project.name %}" class="{% if module == 'issues' %}{% if action != 'new' %}active{% endif %}{% endif %}">Issues</a></li>
+                <li><a href="{% url issues_list project.name %}" class="{% if module == 'issues' %}{% if action != 'new' %}active{% endif %}{% endif %}">Issues</a></li>
                 <li><a href="{% url issues_new project.name %}" class="{% if action == 'new' %}active{% endif %}">New issue</a></li>
+                <li><a href="{% url activity_project project %}" class="{% if module == 'activity' %}active{% endif %}">Activity</a></li>
                 {% if role == 'admin' %}
                     <li><a href="{% url project_manage project %}" class="{% if module == 'manage' %}active{% endif %}">Manage</a></li>
                 {% endif %}

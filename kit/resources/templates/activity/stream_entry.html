@@ -1,0 +1,20 @@
+{% load markup %}
+{% load comments %}{% load markup %}
+{% load comments %}
+<div class="comment">
+    <img class="avatar avatar-min" src="{% gravatar c.author %}" />
+
+    <div class="comment-head">
+        <strong>{{ c.author }}</strong> on <span class="date">{{ c.date.time }}</span>,
+        <a href="{% url issues_view project c.issue.id %}">{{ c.issue }}</a>
+    </div>
+    <div class="comment-body">
+        <p>
+        {{ c.text|markdown }}
+        {% if c.reply_to %}
+            <small>in reply to: {{ c.reply_to }}</small>
+        {% endif %}
+        </p>
+    </div>
+</div>
+<div class="comment-spacer"></div>

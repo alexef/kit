@@ -12,6 +12,7 @@ urlpatterns = patterns('',
 
     url(r'^$', HomePage.as_view(), name='projects_list'),
     url(r'^(?P<project>.+)/issues/', include('kit.issues.urls')),
+    url(r'^(?P<project>.+)/activity/', include('kit.activity.urls')),
     url(r'^(?P<project>.+)/manage/$', ManageProject.as_view(), name='project_manage'),
     url(r'^(?P<project>.+)/manage/add/$', PUCreate.as_view(), name='project_manage_add'),
     url(r'^(?P<project>.+)/manage/edit/(?P<pk>\d+)/$', PUUpdate.as_view(), name='project_manage_edit'),

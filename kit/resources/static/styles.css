@@ -11,6 +11,9 @@ body, td, th {
 th, td {
     padding:  4px;
 }
+code {
+    font-family: monospace;
+}
 #header {
     background-color: #5f9ea0;
     padding: 6px 10px;

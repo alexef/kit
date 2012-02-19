@@ -89,7 +89,7 @@ class IssueForm(forms.ModelForm):
                 return
             else:
                 project = self.instance.project
-        self.fields['dependencies'].queryset = project.issue_set
+        self.fields['dependencies'].queryset = project.issue_set.order_by('-active')
         self.fields['category'].queryset = project.category_set
         self.fields['assigned'].queryset = project.users
         self.fields['reporter'].queryset = project.users

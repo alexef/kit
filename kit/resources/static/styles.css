@@ -143,3 +143,16 @@ span.date {
 div.day-body {
     margin-left: 20px;
 }
+
+.pri-low {
+    color: #777;
+}
+.pri-medium {
+    color: #444;
+}
+.pri-high {
+    color: orange;
+}
+.pri-critical {
+    color: red;
+}

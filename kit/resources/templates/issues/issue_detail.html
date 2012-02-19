@@ -15,7 +15,7 @@
     <table class="description"><tr>
      <td valign="top" width="30%">
         <p><strong>Status:</strong> {{ object.get_status_display }}</p>
-        <p><strong>Priority:</strong> {{ object.get_priority_display }}</p>
+        <p><strong>Priority:</strong> <span class="pri-{{ object.get_priority_display|lower }}">{{ object.get_priority_display }}</span></p>
         <p><strong>Assigned to:</strong> {{ object.assigned }}</p>
     </td>
     <td valign="top" width="30%">

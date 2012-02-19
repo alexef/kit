@@ -53,7 +53,7 @@
         <td>{{ issue.pk }}</td>
         <td>{{ issue.tracker }}</td>
         <td>{{ issue.get_status_display }}</td>
-        <td>{{ issue.get_priority_display }}</td>
+        <td class="pri-{{ issue.get_priority_display|lower }}">{{ issue.get_priority_display }}</td>
         <td><a href="{% url issues_view issue.project issue.pk %}">{{ issue.title }}</a></td>
         <td align="center">{% if issue.assigned %}{{ issue.assigned }}{% else %}-{% endif %}</td>
         <td>{{ issue.date_updated }}</td>

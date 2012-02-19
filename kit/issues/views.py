@@ -36,7 +36,7 @@ class ManageProject(TemplateView):
 class IssueListView(ListView):
     def get_queryset(self):
         project = get_object_or_404(Project, name__iexact=self.kwargs['project'])
-        return Issue.objects.filter(project=project).order_by('tracker', '-active', 'status', '-date_updated')
+        return Issue.objects.filter(project=project).order_by('tracker', '-active', '-priority', 'status', '-date_updated')
 
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()

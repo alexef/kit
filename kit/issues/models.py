@@ -146,22 +146,31 @@ class Issue(models.Model):
         
     def get_changes(self, initial, extra=None, excludes=[]):
         changes = {}
+        def get_obj_val(cls, id):
+            try:
+                return unicode(cls.objects.get(pk=id))
+            except:
+                return 'None'
+
         for field in self._meta.fields:
             if not (field.name in excludes):
-                if field.value_from_object(self) != field.value_from_object(initial):
-                    changes[field.verbose_name] = (field.value_from_object(self),
-                                                       field.value_from_object(initial))
+                current_value, initial_value = field.value_from_object(self), field.value_from_object(initial)
+                if current_value != initial_value:
+                    changes[field.verbose_name] = (current_value, initial_value)
+
                     if field.flatchoices:
                         value, zero = changes[field.verbose_name]
                         value = dict(field.flatchoices).get(value, value)
                         changes[field.verbose_name] = (value, zero)
                     elif field.name in ('assigned', 'reporter'):
-                        def get_user(field, obj):
-                            id = field.value_from_object(obj)
-                            try: return User.objects.get(id=id)
-                            except: return None
-                        changes[field.verbose_name] = (get_user(field, self),
-                            get_user(field, initial))
+                        changes[field.verbose_name] = (get_obj_val(User, current_value),
+                           get_obj_val(User, initial_value))
+                    elif field.name == 'tracker':
+                        changes[field.verbose_name] = (get_obj_val(Tracker, current_value),
+                            initial_value)
+                    elif field.name == 'category':
+                        changes[field.verbose_name] = (get_obj_val(Category, current_value),
+                            initial_value)
         if extra:
             for k, v in extra.iteritems():
                 if set(getattr(initial, k).all()) != set(v):

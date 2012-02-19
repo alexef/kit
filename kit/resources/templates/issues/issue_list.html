@@ -6,6 +6,13 @@
         <li><a href="{% url issues_list project %}">View all</a></li>
         <li><a href="{% url issues_report project %}">Report</a></li>
     </ul>
+
+    <h4>Statistics</h4>
+    <ul>
+        <li>Open: {{ project.stats.open }}</li>
+        <li>Closed: {{ project.stats.closed }}</li>
+        <li>New: {{ project.stats.new }}</li>
+    </ul>
 {% endblock %}
 
 {% block content %}

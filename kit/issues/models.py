@@ -44,6 +44,20 @@ class Project(models.Model):
 
     users = models.ManyToManyField(User, through=ProjectUser, blank=True)
 
+    @property
+    def stats(project):
+        class Stat:
+            def __getitem__(self, item):
+                if item == 'open':
+                    return project.issue_set.filter(active=True).count()
+                if item == 'new':
+                    return project.issue_set.filter(status='n').count()
+                if item == 'all':
+                    return project.issue_set.all().count()
+                if item == 'closed':
+                    return project.issue_set.filter(active=False).count()
+        return Stat()
+
     def __unicode__(self):
         return self.name
 

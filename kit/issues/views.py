@@ -136,7 +136,7 @@ class IssueReportsView(TemplateView):
         project = get_object_or_404(Project, name__iexact=kwargs['project'])
 
         context = dict(params=kwargs)
-        context['users'] = User.objects.all()
+        context['users'] = project.users.all()
         context['trackers'] = Tracker.objects.all()
 
         def stats(user):

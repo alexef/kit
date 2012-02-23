@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django import forms
-from models import Project, ProjectUser, Issue, Tracker, Comment, UserPreference
+from models import Project, ProjectUser, Issue, Tracker, Comment, UserPreference, Category
 
 class HomePage(TemplateView):
     template_name = 'issues/projects.html'
@@ -32,6 +32,16 @@ class ManageProject(TemplateView):
         project = get_object_or_404(Project, name__iexact=self.kwargs['project'])
         context['puform'] = PUForm(initial={'project': project})
         return context
+
+    def post(self, request, *args, **kwargs):
+        class CategoryForm(forms.ModelForm):
+            class Meta:
+                model = Category
+                widgets = {'project': forms.HiddenInput}
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+        return self.get(request, *args, **kwargs)
 
 class IssueListView(ListView):
     def get_queryset(self):

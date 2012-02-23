@@ -22,4 +22,24 @@
         <button type="submit">Add</button>
         {% csrf_token %}
     </form>
+    
+    <h3>Categories</h3>
+    <table>
+    {% for c in project.category_set.all %}
+        <tr>
+            <td>{{ c }}</td>
+            <td>{{ c.issue_set.count }}</td>
+            <td>
+                <a href="{% url admin:issues_category_change c.id %}">Edit</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    <h4>Add category:</h4>
+    <form method="post">
+        <input type="text" name="name" size="20" />
+        <input type="hidden" name="project" value="{{ project.id }}" />
+        <button type="submit">Add</button>
+        {% csrf_token %}
+    </form>
 {% endblock %}

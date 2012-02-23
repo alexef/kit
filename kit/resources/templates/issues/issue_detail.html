@@ -55,7 +55,9 @@
     </tr></table>
 
     <p><strong>Description</strong></p>
-    <p>{{ object.text|markdown }}</p>
+    {% autoescape off %}
+        <p>{{ object.text|markdown|linkify:project.name }}</p>
+    {% endautoescape %}
     </div>
 
     <div class="actions">

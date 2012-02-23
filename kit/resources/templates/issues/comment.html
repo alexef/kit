@@ -5,7 +5,9 @@
 
     <div class="comment-head"><strong>{{ c.author }}</strong> on <span class="date">{{ c.date }}</span></div>
     <div class="comment-body">
-        <p>{{ c.text|markdown }}</p>
+        {% autoescape off %}
+        <p>{{ c.text|markdown|linkify:project.name }}</p>
+        {% endautoescape %}
         <div class="replies">
         {% for rc in c.children %}
             {% do_comment rc %}

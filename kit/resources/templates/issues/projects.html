@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 {% load markup %}
+{% load comments %}
 
 {% block content %}
 <h2>Select project</h2>
 
 {% for project in projects %}
     <h3><a href="{% url issues_list project.name %}">{{ project.title }}</a></h3>
-    <p>{{ project.description|markdown }}</p>
+    {% autoescape off %}
+    <p>{{ project.description|markdown|linkify }}</p>
+    {% endautoescape %}
 {% empty %}
     <p>No projects defined.</p>
 {% endfor %}

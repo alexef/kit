@@ -10,10 +10,12 @@
     </div>
     <div class="comment-body">
         <p>
-        {{ c.text|markdown }}
+        {% autoescape off %}
+        {{ c.text|markdown|linkify:project.name }}
         {% if c.reply_to %}
             <small>in reply to: {{ c.reply_to }}</small>
         {% endif %}
+        {% endautoescape %}
         </p>
     </div>
 </div>

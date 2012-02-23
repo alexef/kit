@@ -222,7 +222,7 @@ class Comment(models.Model):
 
     @classmethod
     def alert(cls, issue, user, text, new=False):
-        subject = '[%s] %s %s #%d' % (issue.project, user, 'changed' if not new else 'created', issue.id)
+        subject = '[%s] %s %s #%d %s' % (issue.project, user, 'changed' if not new else 'created', issue.id, issue.title)
         mail_from = '@'.join((settings.EMAIL_HOST_USER, settings.EMAIL_HOST))
         if new:
             mail_to = [u.email for u in issue.project.get_created_subscribers()]

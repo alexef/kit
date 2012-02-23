@@ -122,7 +122,7 @@ class NoInput(forms.HiddenInput):
 class IssueCreate(CreateView):
     class IssueCreateForm(forms.ModelForm):
         class Meta:
-            fields = ('tracker', 'priority', 'category', 'title', 'text', 'reporter', 'project')
+            fields = ('tracker', 'priority', 'category', 'assigned', 'title', 'text', 'reporter', 'project')
             widgets = {'reporter': NoInput, 'project': NoInput}
             model = Issue
 

@@ -27,7 +27,9 @@ def main():
     commits = []
     for line in lines:
         old_rev, new_rev, ref_name = line.split()
-        commits.extend(get_commits(old_rev, new_rev))
+        branch = ref_name[ref_name.rfind('/')+1:]
+        if branch == 'master':
+            commits.extend(get_commits(old_rev, new_rev))
 
     # now parse commits
     from django.core.management import setup_environ

@@ -28,6 +28,9 @@
                     <option value=""    {% if not status %}selected{% endif %}>any</option>
                     <option value="open"    {% if status == 'open' %}selected{% endif %}>open</option>
                     <option value="closed"  {% if status == 'closed' %}selected{% endif %}>closed</option>
+                    {% for s in statuses %}
+                    <option value="{{ s.0 }}" {% if status == s.0 %}selected{% endif %}>{{ s.1 }}</option>
+                    {% endfor %}
                     </select>
                 </td>
             </tr>

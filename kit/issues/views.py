@@ -46,7 +46,7 @@ class ManageProject(TemplateView):
 class IssueListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(IssueListView, self).get_context_data(**kwargs)
-        context.update({'categories': Category.objects.all()})
+        context.update({'categories': Category.objects.all(), 'statuses': Issue.STATUSES })
         return context
 
     def get_queryset(self):
@@ -68,6 +68,8 @@ class IssueListView(ListView):
                 self.object_list = self.object_list.filter(active=True)
             elif status == 'closed':
                 self.object_list = self.object_list.filter(active=False)
+            else:
+                self.object_list = self.object_list.filter(status=status)
         if category == 0:
             self.object_list = self.object_list.filter(category=None)
         elif category:

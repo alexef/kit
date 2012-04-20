@@ -14,6 +14,12 @@ th, td {
 code {
     font-family: monospace;
 }
+body {
+    max-width: 1200px;
+    margin: 0 auto;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
 #header {
     background-color: #5f9ea0;
     padding: 6px 10px;

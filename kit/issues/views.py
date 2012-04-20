@@ -44,6 +44,11 @@ class ManageProject(TemplateView):
         return self.get(request, *args, **kwargs)
 
 class IssueListView(ListView):
+    def get_context_data(self, **kwargs):
+        context = super(IssueListView, self).get_context_data(**kwargs)
+        context.update({'categories': Category.objects.all()})
+        return context
+
     def get_queryset(self):
         project = get_object_or_404(Project, name__iexact=self.kwargs['project'])
         return Issue.objects.filter(project=project).order_by('tracker', '-active', '-priority', 'status', '-date_updated')
@@ -52,12 +57,22 @@ class IssueListView(ListView):
         self.object_list = self.get_queryset()
         # apply filters
         status = request.GET.get('status', 'open')
+        category = request.GET.get('category')
+        try:
+            category = int(category)
+        except (TypeError, ValueError):
+            pass
+
         if status:
             if status == 'open':
                 self.object_list = self.object_list.filter(active=True)
             elif status == 'closed':
                 self.object_list = self.object_list.filter(active=False)
-        context = self.get_context_data(object_list=self.object_list, status=status)
+        if category == 0:
+            self.object_list = self.object_list.filter(category=None)
+        elif category:
+            self.object_list = self.object_list.filter(category=category)
+        context = self.get_context_data(object_list=self.object_list, status=status, category=category)
         return self.render_to_response(context)
 
 class IssueDetailView(DetailView):

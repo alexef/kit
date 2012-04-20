@@ -18,7 +18,8 @@
 {% block content %}
     <h2>Issues</h2>
 
-    <fieldset><legend>Filters</legend>
+    <fieldset><legend onclick="$('#filters-content').toggle();" style="cursor: hand;">Filters</legend>
+    <div id="filters-content">
     <form action="" method="get" name="form">
         <table>
             <tr>
@@ -30,11 +31,23 @@
                     </select>
                 </td>
             </tr>
+            <tr>
+                <td>Category:</td>
+                <td><select name="category">
+                    <option value=""    {% if not category %}selected{% endif %}>any</option>
+                    <option value="0"    {% if category == 0 %}selected{% endif %}>none</option>
+                    {% for c in categories %}
+                    <option value="{{ c.id }}" {% if category == c.id %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                    </select>
+                </td>
+            </tr>
         </table>
         <div class="actions">
             <a href="#" onclick="form.submit();return false">Apply</a>
         </div>
     </form>
+    </div>
     </fieldset>
 
     <table>

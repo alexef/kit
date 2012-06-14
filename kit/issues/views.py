@@ -46,7 +46,7 @@ class ManageProject(TemplateView):
 class IssueListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(IssueListView, self).get_context_data(**kwargs)
-        context.update({'categories': Category.objects.all(), 'statuses': Issue.STATUSES })
+        context.update({'categories': Category.objects.filter(project__name__iexact=self.kwargs['project']), 'statuses': Issue.STATUSES })
         return context
 
     def get_queryset(self):
